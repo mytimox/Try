@@ -5,12 +5,13 @@ from django.db import models
 class Product(models.Model):
 
     name = models.CharField(max_length=22, verbose_name="Ім'я")
+    price = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     description = models.TextField(blank=True, null=True, default=None)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
     def __str__(self):
-        st = "Замовлення {}".format(self.name)
+        st = "{}, {}".format(self.price, self.name)
         return st
     class Meta:
         verbose_name = 'Товар'
