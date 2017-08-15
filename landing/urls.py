@@ -6,4 +6,6 @@ app_name = 'lalka'
 urlpatterns =[
     url(r'^landing/', views.landing, name='landing'),
     url(r'^form/$', views.form, name='form'),
+    url(r'^home/', views.home, name='Home'),
+    
 ]
