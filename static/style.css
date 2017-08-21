@@ -63,3 +63,27 @@ html, body{
     padding: 5px;
     margin-bottom: 5px;
 }
+.navbar-top{
+    min-height: 10px;
+    height: 20px;
+    background-color: #72BF72;
+    border: none;
+    border-radius: 0;
+}
+.navbar-main{
+    background-color: #51F373;
+    border: none;
+}
+.basket-container{
+    position: relative;
+    width: 400px;
+    padding: 15px 10px;
+}
+.basket-items{
+    position: absolute;
+    top: 50px;
+    width: 400px;
+    background-color: #55e093;
+    z-index: 10;
+    padding: 10px;
+}
