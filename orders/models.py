@@ -1,5 +1,5 @@
 from django.db import models
-# from django.db.models.signals import post_save
+from django.db.models.signals import post_save
 
 from products.models import Product
 
@@ -58,15 +58,64 @@ class ProductInOrder(models.Model):
 
     class Meta:
         verbose_name = 'Товар в замовленні'
-        verbose_name_plural = 'Товарыв замовленні'
+        verbose_name_plural = 'Товари в замовленні'
 
+    #def save(self, *args, **kwargs):
+        #price_per_item = self.product.price
+        #self.price_per_item = price_per_item
+        #self.total_price = self.nmb * price_per_item    
+        #self.order.total_price = self.total_price
+        #self.order.save()
+        #super(ProductInOrder, self).save(*args, **kwargs)
     def save(self, *args, **kwargs):
         price_per_item = self.product.price
         self.price_per_item = price_per_item
-        self.total_price = self.nmb * price_per_item    
-        self.order.total_price = self.total_price
-        self.order.save()
+        print (self.nmb)
+
+        self.total_price = int(self.nmb) * price_per_item
+
         super(ProductInOrder, self).save(*args, **kwargs)
+
+def product_in_order_post_save(sender, instance, created, **kwargs):
+    order = instance.order
+    all_products_in_order = ProductInOrder.objects.filter(order=order, is_active=True)
+
+    order_total_price = 0
+    for item in all_products_in_order:
+        order_total_price += item.total_price
+
+    instance.order.total_price = order_total_price
+    instance.order.save(force_update=True)
+
+post_save.connect(product_in_order_post_save, sender=ProductInOrder)
+
+
+class ProductInBasket(models.Model):
+    session_key = models.CharField(max_length=128, blank=True, null=True, default=None)
+    order = models.ForeignKey(Order, blank=True, null=True, default=None)
+    product = models.ForeignKey(Product, blank=True, null=True, default=None)
+    nmb = models.IntegerField(default=1)
+    price_per_item = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,default=0)  #proce*num
+    is_active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        st = '{}'.format(self.product.name)
+        return st
+
+    class Meta:
+        verbose_name = 'Товар в кошику'
+        verbose_name_plural = 'Товари в кошику'
+
+    
+    def save(self, *args, **kwargs):
+        price_per_item = self.product.price
+        self.price_per_item = price_per_item
+        self.total_price = int(self.nmb) * price_per_item
+
+        super(ProductInBasket, self).save(*args, **kwargs)
 
 # def product_in_order_post_save(sender, instance, created, **kwargs):
 #         order = instance.order

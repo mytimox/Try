@@ -5,5 +5,5 @@ from . import views
 #app_name = 'lalka'
 urlpatterns =[
     #url(r'^landing/', views.landing, name='landing'),
-    #url(r'^form/$', views.form, name='form'),
+    url(r'^basket_adding/$', views.basket_adding, name='basket_adding'),
 ]
